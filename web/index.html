@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Clubs &amp; Student Activities Tracking Portal — Real-time QR attendance, cryptographic certificate verification, and predictive engagement pathing.">
+  <meta name="theme-color" content="#0F2922">
+
+  <!-- ═══ PERFORMANCE: DNS Pre-resolution & Preconnect ══════════════════════
+       Resolves Firebase/Google domains BEFORE Flutter starts loading.
+       Saves 200–500ms on first Firebase Auth/Firestore call.
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://storage.googleapis.com" crossorigin>
+  <link rel="dns-prefetch" href="https://securetoken.googleapis.com">
+  <link rel="dns-prefetch" href="https://cloudfunctions.net">
+
+  <!-- ═══ PERFORMANCE: Preload critical Flutter assets ═════════════════════
+       CanvasKit WASM is the largest asset (~2.5MB). Preloading it in parallel
+       with DOM parsing reduces perceived load time significantly.
+  ═══════════════════════════════════════════════════════════════════════════ -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <link rel="preload" href="main.dart.js" as="script">
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="AI Clubs &amp; Student Activities Portal">
+  <meta property="og:description" content="Campus hub for managing clubs, QR attendance, certificate verification, and predictive engagement pathing.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Campus Activity Radar">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>AI Clubs &amp; Student Activities Portal</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* ── Prevent flash of white background before Flutter loads ── */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #0F2922;
+      height: 100%;
+      width: 100%;
+      /* Hint to browser: this page does heavy compositing */
+      will-change: transform;
+    }
+
+    /* ── Themed splash loading screen ── */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0F2922 0%, #1C2A21 50%, #0D9488 100%);
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+    #loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .loader-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .loader-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(123, 150, 119, 0.8);
+      margin: 0 5px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    .loader-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loader-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+      40%            { transform: scale(1.0); opacity: 1.0; }
+    }
+    .loader-label {
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      font-family: -apple-system, 'Inter', sans-serif;
+      letter-spacing: 2px;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Themed splash shown while CanvasKit + Flutter initializes -->
+  <div id="loading-screen" aria-label="Loading application">
+    <svg width="52" height="52" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+      <rect width="52" height="52" rx="15" fill="rgba(255,255,255,0.08)"/>
+      <rect width="52" height="52" rx="15" stroke="rgba(123,150,119,0.3)" stroke-width="1"/>
+      <path d="M26 11 C19 11 13 17 13 26 C13 35 19 41 26 41 C33 41 39 35 39 26 C39 21 37 17 32 15"
+            stroke="#7B9677" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <circle cx="26" cy="26" r="4.5" fill="#7B9677" opacity="0.9"/>
+    </svg>
+    <div class="loader-row">
+      <div class="loader-dot"></div>
+      <div class="loader-dot"></div>
+      <div class="loader-dot"></div>
+    </div>
+    <p class="loader-label">CAMPUS ACTIVITY RADAR</p>
+  </div>
+
+  <!--
+    flutter_bootstrap.js kicks off CanvasKit download + Flutter engine init.
+    It is loaded ASYNC so it does not block HTML parsing.
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    // ── Clear any stale FlutterFire AppCheck / reCAPTCHA storage tokens ─────
+    try {
+      if (window.sessionStorage) {
+        for (var i = sessionStorage.length - 1; i >= 0; i--) {
+          var k = sessionStorage.key(i);
+          if (k && (k.indexOf('FlutterFire-') === 0 || k.indexOf('recaptcha') !== -1 || k.indexOf('appCheck') !== -1)) {
+            sessionStorage.removeItem(k);
+          }
+        }
+      }
+      if (window.localStorage) {
+        for (var j = localStorage.length - 1; j >= 0; j--) {
+          var lk = localStorage.key(j);
+          if (lk && (lk.indexOf('FlutterFire-') === 0 || lk.indexOf('recaptcha') !== -1 || lk.indexOf('appCheck') !== -1)) {
+            localStorage.removeItem(lk);
+          }
+        }
+      }
+    } catch (e) {}
+
+    // ── Remove splash after Flutter renders its first frame ──────────────────
+    // 'flutter-first-frame' is dispatched by the Flutter engine after the
+    // first rasterized frame is presented to the compositor.
+    window.addEventListener('flutter-first-frame', function () {
+      var loader = document.getElementById('loading-screen');
+      if (loader) {
+        loader.classList.add('hidden');
+        // Remove from DOM after fade-out completes (500ms transition)
+        setTimeout(function () { loader.remove(); }, 600);
+      }
+    });
+  </script>
+</body>
+</html>

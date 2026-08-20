@@ -1,0 +1,37 @@
+name: Deploy to Firebase Hosting on Merge
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter Engine
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Verify Code Quality & Analyze
+        run: flutter analyze
+
+      - name: Build Flutter Web Release Bundle
+        run: flutter build web --release
+
+      - name: Deploy to Firebase Hosting (Live Channel)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AI_CLUB_ACTIVITY }}'
+          channelId: live
+          projectId: ai-club-activity
