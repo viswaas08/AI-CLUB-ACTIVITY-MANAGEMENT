@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase Service Account Secrets & Credentials (Never commit to Git)
+SERVICE ACCOUNT KEy/
+*firebase-adminsdk*.json
+service-account*.json
+*.key.json
+
