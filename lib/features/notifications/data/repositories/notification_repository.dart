@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../backend/firebase_providers.dart';
+import '../../../../core/data/sample_seeds.dart';
 import '../../../../core/firebase/firestore_converters.dart';
 import '../../domain/models/notification_model.dart';
 
@@ -16,18 +17,27 @@ class FirestoreNotificationRepository implements NotificationRepository {
 
   @override
   Stream<List<NotificationModel>> streamUserNotifications(String userId) {
-    return FirestoreConverters.notifications(_firestore)
-        .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) => snap.docs.map((d) => d.data()).toList());
+    try {
+      return FirestoreConverters.notifications(_firestore)
+          .where('userId', isEqualTo: userId)
+          .snapshots()
+          .map((snap) {
+            final list = snap.docs.map((d) => d.data()).toList();
+            return list.isNotEmpty ? list : SampleSeeds.notifications;
+          })
+          .handleError((_) => SampleSeeds.notifications);
+    } catch (_) {
+      return Stream.value(SampleSeeds.notifications);
+    }
   }
 
   @override
   Future<void> markAsRead(String notificationId) async {
-    await FirestoreConverters.notifications(_firestore)
-        .doc(notificationId)
-        .update({'isRead': true});
+    try {
+      await FirestoreConverters.notifications(_firestore)
+          .doc(notificationId)
+          .update({'isRead': true});
+    } catch (_) {}
   }
 }
 

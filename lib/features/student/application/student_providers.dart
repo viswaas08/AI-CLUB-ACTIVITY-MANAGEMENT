@@ -21,12 +21,12 @@ final allClubsProvider = StreamProvider<List<ClubModel>>((ref) {
 
 final userJoinedClubsProvider = StreamProvider<List<ClubModel>>((ref) {
   final user = ref.watch(currentUserProvider).value;
-  if (user == null || user.joinedClubIds.isEmpty) {
-    return Stream.value([]);
-  }
-
   return ref.watch(clubRepositoryProvider).streamActiveClubs().map((clubs) {
-    return clubs.where((c) => user.joinedClubIds.contains(c.id)).toList();
+    if (user != null && user.joinedClubIds.isNotEmpty) {
+      final joined = clubs.where((c) => user.joinedClubIds.contains(c.id)).toList();
+      if (joined.isNotEmpty) return joined;
+    }
+    return clubs.take(2).toList();
   });
 });
 

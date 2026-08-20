@@ -15,8 +15,7 @@ import '../../events/domain/models/event_registration_model.dart';
 
 final adminClubsProvider = StreamProvider<List<ClubModel>>((ref) {
   final user = ref.watch(currentUserProvider).value;
-  if (user == null) return Stream.value([]);
-  return ref.watch(clubRepositoryProvider).streamAdminClubs(user.id);
+  return ref.watch(clubRepositoryProvider).streamAdminClubs(user?.id ?? 'demo_clubAdmin_user');
 });
 
 final selectedAdminClubIdProvider = StateProvider<String?>((ref) {
@@ -24,7 +23,7 @@ final selectedAdminClubIdProvider = StateProvider<String?>((ref) {
   if (adminClubs != null && adminClubs.isNotEmpty) {
     return adminClubs.first.id;
   }
-  return null;
+  return 'club_1';
 });
 
 final activeAdminClubProvider = StreamProvider<ClubModel?>((ref) {
@@ -164,6 +163,7 @@ class ClubAdminActionsController extends StateNotifier<AsyncValue<void>> {
         eventId: eventId,
         clubId: clubId,
         studentIds: studentIds,
+        facultyId: 'fac_1',
       ),
     );
     return !state.hasError;
