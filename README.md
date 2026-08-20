@@ -3,7 +3,8 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Hosting%20%7C%20Firestore%20%7C%20Auth-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](.github/workflows/deploy.yml)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/viswaas08/AI-CLUB-ACTIVITY-MANAGEMENT/actions)
+[![Deploy Status](https://img.shields.io/badge/Deploy-Automated-success)](https://github.com/viswaas08/AI-CLUB-ACTIVITY-MANAGEMENT/actions)
 
 An enterprise-grade campus activities platform built with **Flutter Web**, **Firebase**, and **Riverpod**. Designed for universities and student clubs to automate real-time QR attendance, cryptographic certificate issuance & verification, predictive student drop-off analytics, proposal upvoting, and adaptive extracurricular engagement pathways.
 
