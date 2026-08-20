@@ -86,6 +86,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  void _handleGithubSignIn() async {
+    final success = await ref.read(authControllerProvider.notifier).signInWithGithub();
+    if (!success && mounted) {
+      final errorState = ref.read(authControllerProvider);
+      final message = mapAuthErrorMessage(errorState.error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: OrganicColors.accentTerracotta,
+        ),
+      );
+    }
+  }
+
+  void _handleMicrosoftSignIn() async {
+    final success = await ref.read(authControllerProvider.notifier).signInWithMicrosoft();
+    if (!success && mounted) {
+      final errorState = ref.read(authControllerProvider);
+      final message = mapAuthErrorMessage(errorState.error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: OrganicColors.accentTerracotta,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
@@ -246,7 +274,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: Text(
-                                  'OR CONTINUE WITH',
+                                  'OR CONTINUE WITH OAUTH',
                                   style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
@@ -263,17 +291,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ],
                           ),
 
-                          const SizedBox(height: 18),
+                          const SizedBox(height: 16),
 
-                          // Google Sign In Button
-                          DewdropButton(
-                            label: 'Sign In with Google',
-                            variant: DewdropButtonVariant.translucent,
-                            icon: Icons.g_mobiledata_rounded,
-                            isLoading: isLoading,
-                            width: double.infinity,
-                            height: 44,
-                            onPressed: _handleGoogleSignIn,
+                          // OAuth Providers Grid
+                          Row(
+                            children: [
+                              Expanded(
+                                child: DewdropButton(
+                                  label: 'Google',
+                                  variant: DewdropButtonVariant.translucent,
+                                  icon: Icons.g_mobiledata_rounded,
+                                  isLoading: isLoading,
+                                  height: 42,
+                                  onPressed: _handleGoogleSignIn,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: DewdropButton(
+                                  label: 'GitHub',
+                                  variant: DewdropButtonVariant.translucent,
+                                  icon: Icons.code_rounded,
+                                  isLoading: isLoading,
+                                  height: 42,
+                                  onPressed: _handleGithubSignIn,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: DewdropButton(
+                                  label: 'MS 365',
+                                  variant: DewdropButtonVariant.translucent,
+                                  icon: Icons.window_rounded,
+                                  isLoading: isLoading,
+                                  height: 42,
+                                  onPressed: _handleMicrosoftSignIn,
+                                ),
+                              ),
+                            ],
                           ),
 
                           const SizedBox(height: 24),

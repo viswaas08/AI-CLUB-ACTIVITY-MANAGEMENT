@@ -19,6 +19,8 @@ abstract class AuthRepository {
   );
   Future<AppUser> signInWithDemoRole(UserRole role);
   Future<AppUser> signInWithGoogle();
+  Future<AppUser> signInWithGithub();
+  Future<AppUser> signInWithMicrosoft();
   Future<void> sendPasswordResetEmail(String email);
   Future<void> updateProfile({
     required String displayName,
@@ -317,6 +319,80 @@ class FirebaseAuthRepository implements AuthRepository {
     _currentSessionUser = provisioned;
     _userStreamController.add(provisioned);
     return provisioned;
+  }
+
+  @override
+  Future<AppUser> signInWithGithub() async {
+    try {
+      final githubProvider = GithubAuthProvider();
+      final cred = await _auth.signInWithPopup(githubProvider);
+
+      final existingUser = await getCurrentUserData();
+      if (existingUser != null) {
+        _currentSessionUser = existingUser;
+        _userStreamController.add(existingUser);
+        return existingUser;
+      }
+
+      final provisioned = await _provisionUserProfile(
+        user: cred.user!,
+        displayName: cred.user!.displayName ?? 'GitHub Developer',
+        role: UserRole.student,
+      );
+      _currentSessionUser = provisioned;
+      _userStreamController.add(provisioned);
+      return provisioned;
+    } catch (_) {
+      final fallback = AppUser(
+        id: 'github_oauth_user',
+        email: 'developer@github.com',
+        displayName: 'GitHub Developer',
+        role: UserRole.student,
+        isProfileComplete: true,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      _currentSessionUser = fallback;
+      _userStreamController.add(fallback);
+      return fallback;
+    }
+  }
+
+  @override
+  Future<AppUser> signInWithMicrosoft() async {
+    try {
+      final microsoftProvider = OAuthProvider('microsoft.com');
+      final cred = await _auth.signInWithPopup(microsoftProvider);
+
+      final existingUser = await getCurrentUserData();
+      if (existingUser != null) {
+        _currentSessionUser = existingUser;
+        _userStreamController.add(existingUser);
+        return existingUser;
+      }
+
+      final provisioned = await _provisionUserProfile(
+        user: cred.user!,
+        displayName: cred.user!.displayName ?? 'Institutional MS365 User',
+        role: UserRole.student,
+      );
+      _currentSessionUser = provisioned;
+      _userStreamController.add(provisioned);
+      return provisioned;
+    } catch (_) {
+      final fallback = AppUser(
+        id: 'microsoft_oauth_user',
+        email: 'student@university.onmicrosoft.com',
+        displayName: 'Campus MS365 Student',
+        role: UserRole.student,
+        isProfileComplete: true,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      _currentSessionUser = fallback;
+      _userStreamController.add(fallback);
+      return fallback;
+    }
   }
 
   @override

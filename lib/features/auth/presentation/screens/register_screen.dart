@@ -80,6 +80,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
   }
 
+  void _handleGoogleSignIn() async {
+    final success = await ref.read(authControllerProvider.notifier).signInWithGoogle();
+    if (success && mounted) {
+      context.go('/student');
+    }
+  }
+
+  void _handleGithubSignIn() async {
+    final success = await ref.read(authControllerProvider.notifier).signInWithGithub();
+    if (success && mounted) {
+      context.go('/student');
+    }
+  }
+
+  void _handleMicrosoftSignIn() async {
+    final success = await ref.read(authControllerProvider.notifier).signInWithMicrosoft();
+    if (success && mounted) {
+      context.go('/student');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
@@ -249,6 +270,76 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             height: 46,
                             onPressed: _handleRegister,
                           ),
+                          const SizedBox(height: 18),
+
+                          // Divider
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  color: isLightGreen ? const Color(0xFFCBD5E1) : Colors.white.withValues(alpha: 0.15),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                child: Text(
+                                  'OR REGISTER WITH OAUTH',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.8,
+                                    color: subtextColor,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: isLightGreen ? const Color(0xFFCBD5E1) : Colors.white.withValues(alpha: 0.15),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // OAuth Providers Grid
+                          Row(
+                            children: [
+                              Expanded(
+                                child: DewdropButton(
+                                  label: 'Google',
+                                  variant: DewdropButtonVariant.translucent,
+                                  icon: Icons.g_mobiledata_rounded,
+                                  isLoading: isLoading,
+                                  height: 42,
+                                  onPressed: _handleGoogleSignIn,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: DewdropButton(
+                                  label: 'GitHub',
+                                  variant: DewdropButtonVariant.translucent,
+                                  icon: Icons.code_rounded,
+                                  isLoading: isLoading,
+                                  height: 42,
+                                  onPressed: _handleGithubSignIn,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: DewdropButton(
+                                  label: 'MS 365',
+                                  variant: DewdropButtonVariant.translucent,
+                                  icon: Icons.window_rounded,
+                                  isLoading: isLoading,
+                                  height: 42,
+                                  onPressed: _handleMicrosoftSignIn,
+                                ),
+                              ),
+                            ],
+                          ),
+
                           const SizedBox(height: 20),
 
                           Row(

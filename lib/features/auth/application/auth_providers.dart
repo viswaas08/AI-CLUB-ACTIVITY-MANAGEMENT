@@ -62,6 +62,22 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     return !state.hasError;
   }
 
+  Future<bool> signInWithGithub() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await _repository.signInWithGithub();
+    });
+    return !state.hasError;
+  }
+
+  Future<bool> signInWithMicrosoft() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await _repository.signInWithMicrosoft();
+    });
+    return !state.hasError;
+  }
+
   Future<bool> sendPasswordResetEmail(String email) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
