@@ -80,7 +80,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final authAsync = ref.read(currentUserProvider);
       final isAuthLoading = authAsync.isLoading;
       final appUser = authAsync.value;
-      final firebaseUser = ref.read(authStateChangesProvider).value;
 
       final location = state.uri.toString();
 
@@ -92,24 +91,24 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       final isAuthFormRoute = location == '/auth/login' || location == '/register';
 
-      if (isAuthLoading && firebaseUser != null) {
+      if (isAuthLoading && appUser != null) {
         return null;
       }
 
       // 1. Unauthenticated user accessing protected route
-      if (firebaseUser == null) {
+      if (appUser == null) {
         if (!isPublicRoute) return '/auth/login';
         return null;
       }
 
       // 2. Authenticated but profile incomplete
-      if (appUser != null && !appUser.isProfileComplete) {
+      if (!appUser.isProfileComplete) {
         if (location != '/profile-setup') return '/profile-setup';
         return null;
       }
 
       // 3. Authenticated & complete profile accessing auth forms
-      if (appUser != null && appUser.isProfileComplete && isAuthFormRoute) {
+      if (appUser.isProfileComplete && isAuthFormRoute) {
         switch (appUser.role) {
           case UserRole.student:
             return '/student';
@@ -123,7 +122,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       }
 
       // 4. Role Guards
-      if (appUser != null && appUser.isProfileComplete) {
+      if (appUser.isProfileComplete) {
         if (location.startsWith('/admin') && appUser.role != UserRole.superAdmin) {
           return '/unauthorized';
         }

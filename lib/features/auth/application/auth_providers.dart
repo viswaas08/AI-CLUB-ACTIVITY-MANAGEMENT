@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../backend/firebase_providers.dart';
@@ -18,26 +17,7 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
 });
 
 final currentUserProvider = StreamProvider<AppUser?>((ref) {
-  final authState = ref.watch(authStateChangesProvider);
-  final user = authState.value;
-
-  if (user == null) {
-    return Stream.value(null);
-  }
-
-  final firestore = ref.watch(firebaseFirestoreProvider);
-  return firestore.collection('users').doc(user.uid).snapshots().map((snapshot) {
-    if (!snapshot.exists || snapshot.data() == null) return null;
-    final data = snapshot.data()!;
-    return AppUser.fromJson({
-      'id': snapshot.id,
-      ...data,
-      'createdAt': (data['createdAt'] as Timestamp?)?.toDate().toIso8601String() ??
-          DateTime.now().toIso8601String(),
-      'updatedAt': (data['updatedAt'] as Timestamp?)?.toDate().toIso8601String() ??
-          DateTime.now().toIso8601String(),
-    });
-  });
+  return ref.watch(authRepositoryProvider).currentUserStream;
 });
 
 class AuthController extends StateNotifier<AsyncValue<void>> {
