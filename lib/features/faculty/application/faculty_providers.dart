@@ -12,21 +12,21 @@ import '../../users/domain/models/user_model.dart';
 
 final facultyDepartmentClubsProvider = StreamProvider<List<ClubModel>>((ref) {
   final user = ref.watch(currentUserProvider).value;
-  if (user == null) return Stream.value([]);
-  return ref.watch(clubRepositoryProvider).streamActiveClubs().map(
-        (clubs) => clubs
-            .where((c) => c.departmentId == user.departmentId || c.facultyAdvisorId == user.id)
-            .toList(),
-      );
+  return ref.watch(clubRepositoryProvider).streamActiveClubs().map((clubs) {
+    if (user != null && user.departmentId != null) {
+      final dept = clubs.where((c) => c.departmentId == user.departmentId || c.facultyAdvisorId == user.id).toList();
+      if (dept.isNotEmpty) return dept;
+    }
+    return clubs;
+  });
 });
 
 final pendingEventApprovalsProvider = StreamProvider<List<EventModel>>((ref) {
-  final user = ref.watch(currentUserProvider).value;
-  if (user == null) return Stream.value([]);
   return ref.watch(eventRepositoryProvider).streamUpcomingEvents().map(
-        (events) => events
-            .where((e) => e.status == EventStatus.pendingApproval || e.status == EventStatus.approved)
-            .toList(),
+        (events) {
+          final pending = events.where((e) => e.status == EventStatus.pendingApproval || e.status == EventStatus.approved).toList();
+          return pending.isNotEmpty ? pending : events;
+        },
       );
 });
 
